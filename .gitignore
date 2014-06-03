@@ -20,6 +20,22 @@ build/
 /doc/
 /rdoc/
 
+*~
+*#
+.#*
+\#*#
+.*.sw[a-z]
+*.un~
+pkg/
+
+# Berkshelf
+.vagrant
+/cookbooks
+
+# Bundler
+bin/*
+.bundle/*
+
 ## Environment normalisation:
 /.bundle/
 /lib/bundler/man/
