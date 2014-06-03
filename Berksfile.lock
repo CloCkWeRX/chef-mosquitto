@@ -1,0 +1,9 @@
+DEPENDENCIES
+  mosquitto
+    path: .
+    metadata: true
+
+GRAPH
+  apt (2.4.0)
+  mosquitto (0.0.1)
+    apt (>= 0.0.0)
