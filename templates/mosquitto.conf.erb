@@ -1,0 +1,34 @@
+allow_anonymous false
+autosave_interval 1800
+
+connection_messages true
+log_dest stderr
+log_dest topic
+log_type error
+log_type warning
+log_type notice
+log_type information
+log_type all
+log_type debug
+log_timestamp true
+
+persistence true
+persistence_location /tmp/
+persistence_file mosquitto.db
+persistent_client_expiration 1m
+
+#pid_file xxxx
+
+retained_persistence true
+
+<% node['mosquitto']['listeners'].each do |listener| %>
+listener <%= [listener[:port], listener[:addr]].compact.join(" ") %>
+<% end %>
+
+<% if node['mosquitto']['tls_version'] %>
+tls_version tlsv1
+cafile <%= node['mosquitto']['path']%>/ca.crt
+certfile <%= node['mosquitto']['path']%>/server.crt
+keyfile <%= node['mosquitto']['path']%>/server.key
+<% end %>
+require_certificate false
