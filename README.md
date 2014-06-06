@@ -3,6 +3,14 @@ chef-mosquitto
 
 A cookbook for mosquitto, a MQTT server, client, etc.
 
+Tested on:
+
+ * Centos 6
+ * Ubuntu 12.04
+
+... but Centos 5, Mac OSX, Debian, various flavours of Ubuntu should work.
+
+
 ### Recipes
 
 ```repo``` - Adds the repository if needed for various packages
