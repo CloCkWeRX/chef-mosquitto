@@ -13,13 +13,35 @@ A cookbook for mosquitto, a MQTT server, client, etc.
 
 ```default``` - Installs everything
 
+
+### Simple deployment
+
+```
+{
+  "run_list": ["recipe[mosquitto]", "recipe[mine]"],
+  "mosquitto": {
+    "listeners": [
+      {"port": 1883, "addr": "127.0.0.1"}
+    ]
+  }
+
+}
+```
+
+Don't forget to start the service
+```
+service 'mosquitto' do
+  action :start
+end
+```
+
 ### Typical deployment
 
 Deploy to /etc/mosquitto and run on ports 1883 and 8883 with security.
 
 ```
 {
-  "run_list": "recipe[mosquitto]",
+  "run_list": ["recipe[mosquitto]", "recipe[mine]"],
   "mosquitto": {
     "path": "/etc/mosquitto/",
     "listeners": [
@@ -35,6 +57,12 @@ Deploy to /etc/mosquitto and run on ports 1883 and 8883 with security.
 }
 ```
 
+Don't forget to start the service
+```
+service 'mosquitto' do
+  action :start
+end
+```
 
 #### Add your keys
 
@@ -52,19 +80,6 @@ Don't forget to set up your keys.
 end
 ```
 
-### Simple deployment
-
-```
-{
-  "run_list": "recipe[mosquitto]",
-  "mosquitto": {
-    "listeners": [
-      {"port": 1883, "addr": "127.0.0.1"}
-    ],
-  }
-
-}
-```
 
 ### Config options
 
