@@ -1,7 +1,7 @@
-allow_anonymous false
-autosave_interval 1800
+allow_anonymous <%= node['mosquitto']['allow_anonymous'] %>
+autosave_interval <%= node['mosquitto']['autosave_interval'] %>
 
-connection_messages true
+connection_messages <%= node['mosquitto']['connection_messages'] %>
 log_dest stderr
 log_dest topic
 log_type error
@@ -12,14 +12,14 @@ log_type all
 log_type debug
 log_timestamp true
 
-persistence true
-persistence_location /tmp/
-persistence_file mosquitto.db
-persistent_client_expiration 1m
+<% if node['mosquitto']['persistence'] %>
+persistence <%= node['mosquitto']['persistence'] %>
+persistence_location <%= node['mosquitto']['persistence_location'] %>
+persistence_file <%= node['mosquitto']['persistence_file'] %>
+persistent_client_expiration <%= node['mosquitto']['persistent_client_expiration'] %>
+<% end %>
 
-#pid_file xxxx
-
-retained_persistence true
+retained_persistence <%= node['mosquitto']['retained_persistence'] %>
 
 <% node['mosquitto']['listeners'].each do |listener| %>
 listener <%= [listener[:port], listener[:addr]].compact.join(" ") %>
@@ -31,4 +31,5 @@ cafile <%= node['mosquitto']['path'] %>/<%= node['mosquitto']['cafile'] %>
 certfile <%= node['mosquitto']['path'] %>/<%= node['mosquitto']['certfile'] %>
 keyfile <%= node['mosquitto']['path']%>/<%= node['mosquitto']['keyfile'] %>
 <% end %>
-require_certificate false
+
+require_certificate <%= node['mosquitto']['require_certificate'] %>

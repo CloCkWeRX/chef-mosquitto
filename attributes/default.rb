@@ -13,4 +13,20 @@ default['mosquitto']['listeners'] = [
 ]
 
 default['mosquitto']['tls_version'] = nil
+default['mosquitto']['autosave_interval'] = '1800'
+default['mosquitto']['allow_anonymous'] = "false"
+
+default['mosquitto']['connection_messages'] = "true"
+
+default['mosquitto']['persistence'] = "true"
+
+default['mosquitto']['persistence_location'] = "/tmp/"
+
+default['mosquitto']['persistence_file'] = "mosquitto.db"
+
+default['mosquitto']['persistent_client_expiration'] = "1m"
+
+default['mosquitto']['retained_persistence'] = "true"
+
+default['mosquitto']['require_certificate'] = "false"
 
