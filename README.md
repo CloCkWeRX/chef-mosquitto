@@ -102,3 +102,23 @@ end
 ```certfile``` - Short name for file. Assumes ```node['mosquitto']['path']```.
 
 ```keyfile``` - Short name for file. Assumes ```node['mosquitto']['path']```.
+
+```allow_anonymous``` - Allow anonymous? Defaults to ```"false"```
+
+```autosave_interval``` - Defaults to '1800'
+
+```allow_anonymous``` - Defaults to "false"
+
+```connection_messages``` - Defaults to "true"
+
+```persistence``` - Defaults to "true"
+
+```persistence_location``` - Defaults to "/tmp/"
+
+```persistence_file``` - Defaults to "mosquitto.db"
+
+```persistent_client_expiration``` - Defaults to "1m"
+
+```retained_persistence``` - Defaults to "true"
+
+```require_certificate``` - Defaults to "false"
