@@ -72,4 +72,10 @@ end
 
 ```path``` - Override the automatically guessed path
 
-``````
+```tls_version``` - Defaults to nil. If you specify a value ('tls_v1') you must provide ```cafile```, ```keyfile```, and ```certfile```.
+
+```cafile``` - Short name for file. Assumes ```node['mosquitto']['path']```.
+
+```certfile``` - Short name for file. Assumes ```node['mosquitto']['path']```.
+
+```keyfile``` - Short name for file. Assumes ```node['mosquitto']['path']```.
