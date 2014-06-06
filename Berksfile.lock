@@ -7,3 +7,5 @@ GRAPH
   apt (2.4.0)
   mosquitto (0.0.1)
     apt (>= 0.0.0)
+    yum (>= 0.0.0)
+  yum (3.2.0)
