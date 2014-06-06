@@ -26,9 +26,9 @@ listener <%= [listener[:port], listener[:addr]].compact.join(" ") %>
 <% end %>
 
 <% if node['mosquitto']['tls_version'] %>
-tls_version tlsv1
-cafile <%= node['mosquitto']['path']%>/ca.crt
-certfile <%= node['mosquitto']['path']%>/server.crt
-keyfile <%= node['mosquitto']['path']%>/server.key
+tls_version <%= node['mosquitto']['tls_version'] %>
+cafile <%= node['mosquitto']['path'] %>/<%= node['mosquitto']['cafile'] %>
+certfile <%= node['mosquitto']['path'] %>/<%= node['mosquitto']['certfile'] %>
+keyfile <%= node['mosquitto']['path']%>/<%= node['mosquitto']['keyfile'] %>
 <% end %>
 require_certificate false
