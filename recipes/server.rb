@@ -9,7 +9,7 @@ template "/etc/mosquitto/mosquitto.conf" do
 
   mode 0640
 
-  notifies :restart, "service[mosquitto]"
+  notifies :reload, "service[mosquitto]"
 end
 
 service 'mosquitto' do
