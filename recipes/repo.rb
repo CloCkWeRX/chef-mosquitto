@@ -1,5 +1,3 @@
-server_packages = %w{mosquitto}
-client_packages = []
 
 case node['platform']
 when 'ubuntu'
@@ -33,9 +31,6 @@ when "mac_os_x"
 when "redhat", "centos", "scientific", "fedora", "arch", "amazon"
   include_recipe 'yum::default'
   
-  server_packages = %w{mosquitto}
-  client_packages = %w{mosquitto-clients libmosquitto1 libmosquitto-devel libmosquittopp1 libmosquittopp-devel python-mosquitto}
-
   if node['platform_version'].to_i == 6
     yum_repository 'mosquitto' do
       description 'Mosquitto Repository'
