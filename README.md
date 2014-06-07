@@ -95,30 +95,19 @@ end
 
 ```path``` - Override the automatically guessed path
 
-```tls_version``` - Defaults to nil. If you specify a value ('tls_v1') you must provide ```cafile```, ```keyfile```, and ```certfile```.
+```bridges``` - An array of bridge connections to make.
 
-```cafile``` - Short name for file. Assumes ```node['mosquitto']['path']```.
+```
+{
+  "mosquitto": {
+    "bridges": [{
+      "connection": "test-mosquitto-org"
+      "address": "test.mosquitto.org",
+      "cleansession": "true",
+      "topics": ["clients/total in 0 test/mosquitto/org $SYS/broker/"]
+    }]
+  }
+}
 
-```certfile``` - Short name for file. Assumes ```node['mosquitto']['path']```.
-
-```keyfile``` - Short name for file. Assumes ```node['mosquitto']['path']```.
-
-```allow_anonymous``` - Allow anonymous? Defaults to ```"false"```
-
-```autosave_interval``` - Defaults to '1800'
-
-```allow_anonymous``` - Defaults to "false"
-
-```connection_messages``` - Defaults to "true"
-
-```persistence``` - Defaults to "true"
-
-```persistence_location``` - Defaults to "/tmp/"
-
-```persistence_file``` - Defaults to "mosquitto.db"
-
-```persistent_client_expiration``` - Defaults to "1m"
-
-```retained_persistence``` - Defaults to "true"
-
-```require_certificate``` - Defaults to "false"
+All of the standard configuration options are supported.
+See http://mosquitto.org/man/mosquitto-conf-5.html for more.

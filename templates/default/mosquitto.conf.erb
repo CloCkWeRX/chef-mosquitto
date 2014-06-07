@@ -1,7 +1,14 @@
-allow_anonymous <%= node['mosquitto']['allow_anonymous'] %>
-autosave_interval <%= node['mosquitto']['autosave_interval'] %>
+<%
+options = %w{allow_anonymous autosave_interval connection_messages retained_persistence tls_version cafile certfile capath crlfile ciphers keyfile require_certificate use_identity_as_username upgrade_outgoing_qos user sys_interval store_clean_interval retry_interval queue_qos0_messages psk_file pid_file persistent_client_expiration persistence_file persistence_location persistence password_file message_size_limit max_queued_messages max_inflight_messages log_timestamp include_dir clientid_prefixes autosave_on_changes auth_plugin allow_duplicate_messages acl_file}
+bridge_options = %w{ connection address cleansession try_private username password threshold start_type round_robin keepalive_interval idle_timeout notifications notification_topic bridge_cafile bridge_capathbridge_certfile bridge_identity bridge_insecure bridge_keyfile}
+%>
 
-connection_messages <%= node['mosquitto']['connection_messages'] %>
+<% 
+options.select{|x|node['mosquitto'].has_key(x)}.each do |option|
+  puts "#{option} #{node['mosquitto'][option]}"
+end
+%>
+
 log_dest stderr
 log_dest topic
 log_type error
@@ -10,26 +17,19 @@ log_type notice
 log_type information
 log_type all
 log_type debug
-log_timestamp true
-
-<% if node['mosquitto']['persistence'] %>
-persistence <%= node['mosquitto']['persistence'] %>
-persistence_location <%= node['mosquitto']['persistence_location'] %>
-persistence_file <%= node['mosquitto']['persistence_file'] %>
-persistent_client_expiration <%= node['mosquitto']['persistent_client_expiration'] %>
-<% end %>
-
-retained_persistence <%= node['mosquitto']['retained_persistence'] %>
 
 <% node['mosquitto']['listeners'].each do |listener| %>
 listener <%= [listener[:port], listener[:addr]].compact.join(" ") %>
 <% end %>
 
-<% if node['mosquitto']['tls_version'] %>
-tls_version <%= node['mosquitto']['tls_version'] %>
-cafile <%= node['mosquitto']['path'] %>/<%= node['mosquitto']['cafile'] %>
-certfile <%= node['mosquitto']['path'] %>/<%= node['mosquitto']['certfile'] %>
-keyfile <%= node['mosquitto']['path']%>/<%= node['mosquitto']['keyfile'] %>
-<% end %>
+<% 
+node['mosquitto']['bridges'].each do |bridge|
+  bridge_options.select{|x|bridge.has_key(x)}.each do |key| 
+    puts "#{key} #{bridge[key]}"
+  end
 
-require_certificate <%= node['mosquitto']['require_certificate'] %>
+  bridge['topics'].each do |topic|
+    puts "topic #{topic}"
+  end
+end
+%>
