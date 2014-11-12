@@ -30,3 +30,5 @@ default['mosquitto']['retained_persistence'] = "true"
 
 default['mosquitto']['require_certificate'] = "false"
 
+default['mosquitto']['bridges'] = []
+default['mosquitto']['listeners'] = []
