@@ -4,7 +4,7 @@ bridge_options = %w{ connection address cleansession try_private username passwo
 %>
 
 <% 
-options.select{|x|node['mosquitto'].has_key(x)}.each do |option|
+options.select{|x|node['mosquitto'].has_key?(x)}.each do |option|
   puts "#{option} #{node['mosquitto'][option]}"
 end
 %>
@@ -24,7 +24,7 @@ listener <%= [listener[:port], listener[:addr]].compact.join(" ") %>
 
 <% 
 node['mosquitto']['bridges'].each do |bridge|
-  bridge_options.select{|x|bridge.has_key(x)}.each do |key| 
+  bridge_options.select{|x|bridge.has_key?(x)}.each do |key| 
     puts "#{key} #{bridge[key]}"
   end
 
