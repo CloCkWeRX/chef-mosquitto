@@ -20,7 +20,7 @@ default['mosquitto']['connection_messages'] = "true"
 
 default['mosquitto']['persistence'] = "true"
 
-default['mosquitto']['persistence_location'] = "/tmp/"
+default['mosquitto']['persistence_location'] = "/var/lib/mosquitto/"
 
 default['mosquitto']['persistence_file'] = "mosquitto.db"
 
@@ -32,3 +32,7 @@ default['mosquitto']['require_certificate'] = "false"
 
 default['mosquitto']['bridges'] = []
 default['mosquitto']['listeners'] = []
+
+default['mosquitto']['pid_file'] = '/var/run/mosquitto.pid'
+
+default['mosquitto']['include_dir'] = '/etc/mosquitto/conf.d'
