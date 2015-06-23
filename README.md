@@ -21,6 +21,7 @@ Tested on:
 
 ```default``` - Installs everything
 
+```source``` - Recipe to install from source - centos only
 
 ### Simple deployment
 
