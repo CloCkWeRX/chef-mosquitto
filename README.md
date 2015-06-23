@@ -55,7 +55,8 @@ Deploy to /etc/mosquitto and run on ports 1883 and 8883 with security.
     "path": "/etc/mosquitto/",
     "listeners": [
       {"port": 1883, "addr": "127.0.0.1"}, 
-      {"port": 8883}
+      {"port": 8883},
+      {"port": 9001, "protocol": "websockets"}
     ],
     "tls_version": "tlsv1",
     "cafile": "ca.crt"
