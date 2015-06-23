@@ -1,0 +1,30 @@
+#!/bin/sh
+
+start_mosquitto() {
+  /usr/local/sbin/mosquitto -c /etc/mosquitto/mosquitto.conf -d
+}
+
+stop_mosquitto() {
+  kill `pidof mosquitto`
+}
+
+COMMAND="$1"
+shift
+
+case $COMMAND in
+status)
+  ;;
+start|stop|restart)
+  $ECHO
+  if [ "$COMMAND" = "stop" ]; then
+    stop_mosquitto
+  elif [ "$COMMAND" = "start" ]; then
+    start_mosquitto
+  elif [ "$COMMAND" = "restart" ]; then
+    stop_mosquitto
+    sleep 1s
+    start_mosquitto
+    exit 0
+  fi
+  ;;
+esac
