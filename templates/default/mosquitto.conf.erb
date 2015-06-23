@@ -18,6 +18,7 @@ log_type debug
 
 <% node['mosquitto']['listeners'].each do |listener| %>
 listener <%= [listener[:port], listener[:addr]].compact.join(" ") %>
+<% if listener[:protocol] %>protocol <%= listener[:protocol] %><% end %>
 <% end %>
 
 <% node['mosquitto']['bridges'].each do |bridge| %>
