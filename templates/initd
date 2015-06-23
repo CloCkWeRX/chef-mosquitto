@@ -1,30 +1,96 @@
-#!/bin/sh
+#! /bin/sh
+# Based on /etc/init.d/sshd as it came on CentOS 5.6:
+#
+# Copyright (c) 1995-2000 SuSE GmbH Nuernberg, Germany.
+#
+# Author: Jiri Smid <feedback@suse.de>
 
-start_mosquitto() {
-  /usr/local/sbin/mosquitto -c /etc/mosquitto/mosquitto.conf -d
+# /etc/init.d/mosquitto
+#
+
+### BEGIN INIT INFO
+# Provides: mosquitto
+# Required-Start: $network $remote_fs
+# Required-Stop: $network $remote_fs
+# Default-Start: 3 5
+# Default-Stop: 0 1 2 6
+# Short-Description: Mosquitto MQTT broker
+# Description: Mosquitto MQTT broker
+### END INIT INFO
+
+MOSQUITTO_BIN=/usr/sbin/mosquitto
+test -x $MOSQUITTO_BIN || exit 5
+prog="mosquitto"
+
+MOSQUITTO_PIDFILE=/var/run/mosquitto.pid
+
+. /etc/rc.d/init.d/functions
+
+start()
+{
+  echo -n "Starting Mosquitto MQTT broker"
+  ## Start daemon with startproc(8). If this fails
+  ## the echo return value is set appropriate.
+
+  $MOSQUITTO_BIN -d -c /etc/mosquitto/mosquitto.conf && success || failure
+  RETVAL=$?
+  [ "$RETVAL" = 0 ] && touch /var/lock/mosquitto
+        echo
 }
 
-stop_mosquitto() {
-  kill `pidof mosquitto`
-}
-
-COMMAND="$1"
-shift
-
-case $COMMAND in
-status)
-  ;;
-start|stop|restart)
-  $ECHO
-  if [ "$COMMAND" = "stop" ]; then
-    stop_mosquitto
-  elif [ "$COMMAND" = "start" ]; then
-    start_mosquitto
-  elif [ "$COMMAND" = "restart" ]; then
-    stop_mosquitto
-    sleep 1s
-    start_mosquitto
-    exit 0
+stop()
+{
+  echo -n "Shutting down Mosquitto MQTT broker"
+        ## Stop daemon with killproc(8) and if this fails
+        ## set echo the echo return value.
+  if [ -n "`pidfileofproc $MOSQUITTO_BIN`" ] ; then
+          #killproc -p $MOSQUITTO_PIDFILE -TERM $MOSQUITTO_BIN
+    killproc $MOSQUITTO_BIN
+  else
+    failure $"Stopping $prog"
   fi
+  RETVAL=$?
+
+  [ "$RETVAL" = 0 ] && rm -f /var/lock/mosquitto
+  echo
+}
+
+reload()
+{
+  echo -n $"Reloading $prog: "
+        if [ -n "`pidfileofproc $MOSQUITTO_BIN`" ] ; then
+            killproc $MOSQUITTO_BIN -HUP
+        else
+            failure $"Reloading $prog"
+        fi
+        RETVAL=$?
+        echo
+}
+
+case "$1" in
+  start)
+    start
+    ;;
+  stop)
+    stop
+    ;;
+  restart)
+    ## Stop the service and regardless of whether it was
+    ## running or not, start it again.
+    $0 stop
+    $0 start
+    ;;
+  force-reload|reload)
+    reload
+    ;;
+  status)
+    status -p $MOSQUITTO_PIDFILE mosquitto
+    RETVAL=$?
+    ;;
+  *)
+  echo "Usage: $0 {start|stop|status|restart|force-reload|reload}"
+  exit 1
   ;;
 esac
+exit $RETVAL
+
