@@ -1,4 +1,4 @@
-dev_tools = %w[autoconf automake binutils bison flex gcc gcc-c++ gettext libtool make patch pkgconfig redhat-rpm-config rpm-build git openssl-devel cmake c-ares-devel libuuid-devel libxslt docbook-xsl]
+dev_tools = %w[wget autoconf automake binutils bison flex gcc gcc-c++ gettext libtool make patch pkgconfig redhat-rpm-config rpm-build git openssl-devel cmake c-ares-devel libuuid-devel libxslt docbook-xsl]
 
 dev_tools.each do |pkg|
   yum_package pkg do
@@ -11,20 +11,28 @@ script 'install libwebsockets' do
   interpreter 'bash'
   user 'root'
   cwd '/tmp'
-  code <<-EOF
-    wget https://github.com/warmcat/libwebsockets/archive/v1.3-chrome37-firefox30.tar.gz -O v1.3-chrome37-firefox30.tar.gz
-    tar zxvf v1.3-chrome37-firefox30.tar.gz
-    rm -f v1.3-chrome37-firefox30.tar.gz
-    cd libwebsockets-1.3-chrome37-firefox30
-    mkdir build
-    cd build
-    cmake .. -DLIB_SUFFIX=64
-    sudo make install
-    sudo ln -s /usr/local/lib64/libwebsockets.so.4.0.0 /usr/lib/libwebsockets.so.4.0.0
-    sudo ln -s /usr/lib/libwebsockets.so.4.0.0 /usr/lib64/libwebsockets.so.4.0.0
-    cd ../..
-    rm -rf libwebsockets-1.3-chrome37-firefox30
-  EOF
+  code [
+    %q[wget https://github.com/warmcat/libwebsockets/archive/v1.3-chrome37-firefox30.tar.gz -O v1.3-chrome37-firefox30.tar.gz],
+    %q[tar zxvf v1.3-chrome37-firefox30.tar.gz],
+    %q[rm -f v1.3-chrome37-firefox30.tar.gz],
+    %q[cd libwebsockets-1.3-chrome37-firefox30],
+    %q[mkdir -p build],
+    %q[cd build],
+    %q[cmake .. -DLIB_SUFFIX=64],
+    %q[make],
+    %q[make install],
+    %q[ln -s /usr/local/lib64/libwebsockets.so.4.0.0 /usr/lib/libwebsockets.so.4.0.0],
+    %q[ln -s /usr/lib/libwebsockets.so.4.0.0 /usr/lib64/libwebsockets.so.4.0.0],
+    %q[cd ../..],
+    %q[rm -rf libwebsockets-1.3-chrome37-firefox30]
+  ].join(" && ")
+end
+
+
+user "#{node['mosquitto']['user']}"
+
+group "#{node['mosquitto']['user']}" do
+  members ["#{node['mosquitto']['user']}"]
 end
 
 script 'install mosquitto with websockets enabled' do
@@ -33,13 +41,18 @@ script 'install mosquitto with websockets enabled' do
   user 'root'
   cwd '/tmp'
   code [
+    'rm -rf org.eclipse.mosquitto',
     'git clone https://git.eclipse.org/r/mosquitto/org.eclipse.mosquitto',
     'cd org.eclipse.mosquitto/',
     'git checkout v1.4.2',
-    "sed -i 's/WITH_WEBSOCKETS:=no/WITH_WEBSOCKETS:=yes/g' config.mk",
-    "sed -i 's/prefix=\/usr\/local/prefix=\/usr/g' config.mk",
-    'make binary',
-    'sudo make install',
+    %q[sed -i 's/WITH_WEBSOCKETS:=no/WITH_WEBSOCKETS:=yes/g' config.mk],
+    %q[sed -i 's/prefix=\/usr\/local/prefix=\/usr/g' config.mk],
+    %q[sed -i 's/DOCDIRS=man/DOCDIRS=/g' Makefile], # DO NOT INCLUDE DOCS in make install
+    'make install', # https://bugs.launchpad.net/mosquitto/+bug/1269967
+    %q[echo "/usr/lib" >> /etc/ld.so.conf.d/mosquitto.conf],
+    %q[ldconfig],
+    %Q[mkdir -p #{node['mosquitto']['persistence_location']}],
+    %Q[chown #{node['mosquitto']['user']} #{node['mosquitto']['persistence_location']}],
     'cd ..',
     'rm -rf org.eclipse.mosquitto'
   ].join(" && ")
@@ -53,8 +66,6 @@ template "/etc/mosquitto/mosquitto.conf" do
   source "mosquitto.conf.erb"
 
   mode 0640
-
-  notifies :reload, "service[mosquitto]"
 end
 
 template '/etc/init.d/mosquitto' do
@@ -63,6 +74,4 @@ template '/etc/init.d/mosquitto' do
   owner 'root'
   group 'root'
   mode 0755
-
-  notifies :restart, "service[mosquitto]"
 end
