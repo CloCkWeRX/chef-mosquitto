@@ -36,3 +36,5 @@ default['mosquitto']['listeners'] = []
 default['mosquitto']['pid_file'] = '/var/run/mosquitto.pid'
 
 default['mosquitto']['include_dir'] = '/etc/mosquitto/conf.d'
+
+default['mosquitto']['user'] = 'mosquitto'
