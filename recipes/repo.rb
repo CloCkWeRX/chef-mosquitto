@@ -31,18 +31,18 @@ when "mac_os_x"
 when "redhat", "centos", "scientific", "fedora", "arch", "amazon"
   include_recipe 'yum::default'
   
-  if node['platform_version'].to_i == 6
+  if node['platform_version'].to_i == 7
+    yum_repository 'mosquitto' do
+      description 'Mosquitto Repository'
+      baseurl     'http://download.opensuse.org/repositories/home:/oojah:/mqtt/CentOS_CentOS-7/'
+      gpgkey      'http://download.opensuse.org/repositories/home:/oojah:/mqtt/CentOS_CentOS-7/repodata/repomd.xml.key'
+      action :create
+    end
+  elsif node['platform_version'].to_i == 6
     yum_repository 'mosquitto' do
       description 'Mosquitto Repository'
       baseurl     'http://download.opensuse.org/repositories/home:/oojah:/mqtt/CentOS_CentOS-6/'
       gpgkey      'http://download.opensuse.org/repositories/home:/oojah:/mqtt/CentOS_CentOS-6/repodata/repomd.xml.key'
-      action :create
-    end
-  elsif node['platform_version'].to_i == 5
-    yum_repository 'mosquitto' do
-      description 'Mosquitto Repository'
-      baseurl     'http://download.opensuse.org/repositories/home:/oojah:/mqtt/CentOS_CentOS-5/'
-      gpgkey      'http://download.opensuse.org/repositories/home:/oojah:/mqtt/CentOS_CentOS-5/repodata/repomd.xml.key'
       action :create
     end
   else
