@@ -7,24 +7,24 @@ dev_tools.each do |pkg|
 end
 
 script 'install libwebsockets' do
-  not_if { File.exists?('/usr/local/lib64/libwebsockets.so.4.0.0') }
+  not_if { File.exists?('/usr/local/lib64/libwebsockets.so.6') }
   interpreter 'bash'
   user 'root'
   cwd '/tmp'
   code [
-    %q[wget https://github.com/warmcat/libwebsockets/archive/v1.3-chrome37-firefox30.tar.gz -O v1.3-chrome37-firefox30.tar.gz],
-    %q[tar zxvf v1.3-chrome37-firefox30.tar.gz],
-    %q[rm -f v1.3-chrome37-firefox30.tar.gz],
-    %q[cd libwebsockets-1.3-chrome37-firefox30],
+    %q[wget https://github.com/warmcat/libwebsockets/archive/v1.6.0-chrome48-firefox42.tar.gz -O v1.6.0-chrome48-firefox42.tar.gz],
+    %q[tar zxvf v1.6.0-chrome48-firefox42.tar.gz],
+    %q[rm -f v1.6.0-chrome48-firefox42.tar.gz],
+    %q[cd libwebsockets-1.6.0-chrome48-firefox42],
     %q[mkdir -p build],
     %q[cd build],
     %q[cmake .. -DLIB_SUFFIX=64],
     %q[make],
     %q[make install],
-    %q[ln -s /usr/local/lib64/libwebsockets.so.4.0.0 /usr/lib/libwebsockets.so.4.0.0],
-    %q[ln -s /usr/lib/libwebsockets.so.4.0.0 /usr/lib64/libwebsockets.so.4.0.0],
+    %q[ln -s /usr/local/lib64/libwebsockets.so.6 /usr/lib/libwebsockets.so.6],
+    %q[ln -s /usr/lib/libwebsockets.so.6 /usr/lib64/libwebsockets.so.6],
     %q[cd ../..],
-    %q[rm -rf libwebsockets-1.3-chrome37-firefox30]
+    %q[rm -rf libwebsockets-1.6.0-chrome48-firefox42]
   ].join(" && ")
 end
 
@@ -44,7 +44,7 @@ script 'install mosquitto with websockets enabled' do
     'rm -rf org.eclipse.mosquitto',
     'git clone https://git.eclipse.org/r/mosquitto/org.eclipse.mosquitto',
     'cd org.eclipse.mosquitto/',
-    'git checkout v1.4.2',
+    'git checkout v1.4.8',
     %q[sed -i 's/WITH_WEBSOCKETS:=no/WITH_WEBSOCKETS:=yes/g' config.mk],
     %q[sed -i 's/prefix=\/usr\/local/prefix=\/usr/g' config.mk],
     %q[sed -i 's/DOCDIRS=man/DOCDIRS=/g' Makefile], # DO NOT INCLUDE DOCS in make install
@@ -59,6 +59,10 @@ script 'install mosquitto with websockets enabled' do
 end
 
 directory '/etc/mosquitto' do
+  action :create
+end
+
+directory '/etc/mosquitto/plugin_config' do
   action :create
 end
 
